@@ -7,15 +7,17 @@ use App\Models\TodoList;
 
 class TodoController extends Controller
 {
-    // Menampilkan semua list beserta tasks-nya
+    // Menampilkan semua list milik user yang login
     public function index()
     {
-        // with('tasks') digunakan agar relasi tasks ikut di-load
-        $lists = TodoList::with('tasks')->get();
+        $lists = TodoList::where('user_id', auth()->id())
+            ->with('tasks')
+            ->get();
+
         return view('todo.index', compact('lists'));
     }
 
-    // Menampilkan form untuk membuat list baru
+    // Menampilkan form membuat list
     public function create()
     {
         return view('todo.create');
@@ -24,49 +26,59 @@ class TodoController extends Controller
     // Menyimpan list baru ke database
     public function store(Request $request)
     {
-        // Validasi field name wajib diisi
         $request->validate(['name' => 'required']);
 
-        // Insert data ke tabel todo_lists
-        TodoList::create(['name' => $request->name]);
+        // CREATE list hanya untuk user yang login
+        TodoList::create([
+            'name' => $request->name,
+            'user_id' => auth()->id(), 
+        ]);
 
-        // Redirect ke halaman index setelah berhasil
         return redirect()->route('lists.index');
     }
 
-    // Menampilkan form edit untuk list tertentu
+    // Menampilkan halaman edit
     public function edit($id)
     {
-        // Cari list berdasarkan ID, jika tidak ada akan throw 404
         $list = TodoList::findOrFail($id);
 
-        // Mengirim data ke blade edit
+        // Cek kepemilikan
+        if ($list->user_id !== auth()->id()) {
+            abort(403); // akses ditolak
+        }
+
         return view('todo.edit', compact('list'));
     }
 
-    // Update data list berdasarkan ID
+    // Update list
     public function update(Request $request, $id)
     {
-        // Validasi input
         $request->validate(['name' => 'required']);
 
-        // Ambil data berdasarkan ID
         $list = TodoList::findOrFail($id);
 
-        // Update name list
+        // Cek kepemilikan
+        if ($list->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $list->update(['name' => $request->name]);
 
-        // Kembali ke index
         return redirect()->route('lists.index');
     }
 
-    // Menghapus list berdasarkan ID
+    // Hapus list
     public function destroy($id)
     {
-        // Delete data jika ada
-        TodoList::findOrFail($id)->delete();
+        $list = TodoList::findOrFail($id);
 
-        // Redirect setelah delete
+        // Cek kepemilikan
+        if ($list->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $list->delete();
+
         return redirect()->route('lists.index');
     }
 }

@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function todoLists()
+{
+    return $this->hasMany(\App\Models\TodoList::class);
+}
+
 }

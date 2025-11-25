@@ -10,8 +10,8 @@ class Task extends Model
     protected $fillable = ['todo_list_id', 'name', 'is_done'];
 
     // Relasi: satu Task milik satu TodoList
-    public function list()
-    {
-        return $this->belongsTo(TodoList::class, 'todo_list_id');
-    }
+   public function list()
+{
+    return $this->belongsTo(\App\Models\TodoList::class, 'todo_list_id');
+}
 }
