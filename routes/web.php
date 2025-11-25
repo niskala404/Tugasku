@@ -1,40 +1,41 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\TaskController;
-use App\Models\Task;
+use Illuminate\Support\Facades\Route;
 
-// Halaman utama
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Resource route untuk Todo List (index, create, store, edit, update, destroy)
-Route::resource('lists', TodoController::class);
+// Dashboard (akses hanya jika login)
+Route::get('/dashboard', [TodoController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-// Route untuk operasi task dalam list
-// Menambahkan task ke list tertentu
-Route::post('/lists/{listId}/tasks', [TaskController::class, 'store'])->name('tasks.store');
+// Semua route yang butuh login
+Route::middleware('auth')->group(function () {
 
-// Update isi task berdasarkan ID
-Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
+    // CRUD Todo List
+    Route::resource('lists', TodoController::class);
 
-// Hapus task berdasarkan ID
-Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    // Task Routes
+    Route::post('/tasks/{listId}', [TaskController::class, 'store'])->name('tasks.store');
+    Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
-// Menandai task sebagai selesai
-Route::put('/tasks/{id}/done', [TaskController::class, 'done'])->name('tasks.done');
+    // Tandai task selesai
+    Route::put('/tasks/{id}/done', [TaskController::class, 'done'])->name('tasks.done');
 
-// Debug: menampilkan semua task beserta relasi list-nya
-Route::get('/tasks', function () {
-    return Task::with('list')->get();
+    // Melihat semua tasks
+    Route::get('/all-tasks', [TaskController::class, 'all'])->name('tasks.all');
+
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Menghapus task berdasarkan name (opsional untuk testing)
-Route::delete('/tasks/name/{name}', function ($name) {
-    Task::where('name', $name)->delete();
-});
-
-//menampilkan semua task dengan statusnya
-Route::get('/tasks/all', [TaskController::class, 'all'])->name('tasks.all');
+// Auth route (register + login)
+require __DIR__.'/auth.php';
