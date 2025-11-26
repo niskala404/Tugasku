@@ -10,8 +10,16 @@ return new class extends Migration {
         Schema::create('todo_lists', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+
+            // Tambahkan kolom tanggal deadline
+            $table->date('due_date')->nullable();
+
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

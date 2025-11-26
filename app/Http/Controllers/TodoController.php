@@ -12,6 +12,7 @@ class TodoController extends Controller
     {
         $lists = TodoList::where('user_id', auth()->id())
             ->with('tasks')
+            ->orderBy('due_date', 'asc') // urutkan berdasarkan tanggal
             ->get();
 
         return view('todo.index', compact('lists'));
@@ -26,15 +27,19 @@ class TodoController extends Controller
     // Menyimpan list baru ke database
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required']);
-
-        // CREATE list hanya untuk user yang login
-        TodoList::create([
-            'name' => $request->name,
-            'user_id' => auth()->id(), 
+        $request->validate([
+            'name' => 'required',
+            'due_date' => 'nullable|date'
         ]);
 
-        return redirect()->route('lists.index');
+        TodoList::create([
+            'name' => $request->name,
+            'due_date' => $request->due_date,
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->route('lists.index')
+            ->with('success', 'Daftar berhasil dibuat');
     }
 
     // Menampilkan halaman edit
@@ -42,9 +47,8 @@ class TodoController extends Controller
     {
         $list = TodoList::findOrFail($id);
 
-        // Cek kepemilikan
         if ($list->user_id !== auth()->id()) {
-            abort(403); // akses ditolak
+            abort(403);
         }
 
         return view('todo.edit', compact('list'));
@@ -53,18 +57,24 @@ class TodoController extends Controller
     // Update list
     public function update(Request $request, $id)
     {
-        $request->validate(['name' => 'required']);
+        $request->validate([
+            'name' => 'required',
+            'due_date' => 'nullable|date'
+        ]);
 
         $list = TodoList::findOrFail($id);
 
-        // Cek kepemilikan
         if ($list->user_id !== auth()->id()) {
             abort(403);
         }
 
-        $list->update(['name' => $request->name]);
+        $list->update([
+            'name' => $request->name,
+            'due_date' => $request->due_date,
+        ]);
 
-        return redirect()->route('lists.index');
+        return redirect()->route('lists.index')
+            ->with('success', 'Daftar berhasil diupdate');
     }
 
     // Hapus list
@@ -72,13 +82,13 @@ class TodoController extends Controller
     {
         $list = TodoList::findOrFail($id);
 
-        // Cek kepemilikan
         if ($list->user_id !== auth()->id()) {
             abort(403);
         }
 
         $list->delete();
 
-        return redirect()->route('lists.index');
+        return redirect()->route('lists.index')
+            ->with('success', 'Daftar berhasil dihapus');
     }
 }
