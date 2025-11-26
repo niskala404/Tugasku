@@ -207,7 +207,7 @@ body { background: var(--bg-page); color: var(--text); }
         </div>
 
         <div class="mt-3 mt-md-0 text-md-end">
-            <a href="{{ route('lists.create') }}" class="link-text">Buat List</a>
+            
 
             @isset($lists)
             <div class="filter-pills mt-2 d-inline-block">
