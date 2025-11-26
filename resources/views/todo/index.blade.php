@@ -17,6 +17,7 @@
     --success: #10b981;
     --card-radius: 12px;
     --glass: rgba(15,23,42,0.02);
+    --accent-teal-light: rgba(6,182,212,0.10); /* untuk background tugas selesai */
 }
 
 /* layout */
@@ -44,6 +45,10 @@ body { background: var(--bg-page); color: var(--text); }
 .card-body { padding:.6rem .9rem; }
 
 .list-group-item { background:transparent; border:none; padding:.45rem 0; color:var(--text); display:flex; align-items:center; justify-content:space-between; }
+
+/* Highlight untuk tugas yang sudah selesai (kolom biru muda) */
+.list-group-item.task-done-item { background: var(--accent-teal-light); border-radius:8px; padding:.5rem; transition: background .18s ease; }
+.list-group-item.task-done-item .task-name { color: var(--text); opacity:0.95; }
 
 .task-name { max-width:72%; display:inline-block; vertical-align:middle; color:var(--text); transition: color .12s ease; }
 .task-done { color:var(--muted); text-decoration:line-through; }
@@ -84,7 +89,7 @@ body { background: var(--bg-page); color: var(--text); }
 
 /* search */
 .search-wrap { display:flex; gap:.5rem; align-items:center; }
-.search { display:flex; gap:.5rem; align-items:center; background:var(--panel); padding:.4rem .55rem; border-radius:999px; border:1px solid rgba(15,23,42,0.04); }
+.search { display:flex; gap:.5rem; align-items:center; background:var(--panel); padding: .4rem .55rem; border-radius:999px; border:1px solid rgba(15,23,42,0.04); }
 
 /* empty state */
 .empty-state { text-align:center; padding:1.1rem; color:var(--muted); }
@@ -109,6 +114,7 @@ body { background: var(--bg-page); color: var(--text); }
     .badge{ font-size:.72rem; padding:.22rem .46rem }
 }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <div class="content-wrap container">
     <div class="dashboard">
@@ -190,7 +196,7 @@ body { background: var(--bg-page); color: var(--text); }
                                     <div class="card-body">
                                         <ul class="list-group list-group-flush">
                                             @foreach($tasks as $task)
-                                                <li class="list-group-item d-flex align-items-center justify-content-between">
+                                                <li class="list-group-item d-flex align-items-center justify-content-between {{ $task->is_done ? 'task-done-item' : '' }}">
                                                     <div class="d-flex align-items-center gap-2">
                                                         @if($task->is_done)
                                                             <i class="fas fa-check-circle" style="color:var(--success)"></i>
@@ -209,7 +215,7 @@ body { background: var(--bg-page); color: var(--text); }
                                                         @endif
                                                         <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Hapus tugas ini?')">
                                                             @csrf @method('DELETE')
-                                                            <button class="btn btn-sm btn-outline-danger" title="Hapus" aria-label="Hapus tugas"><i class="fas fa-ship"></i></button>
+                                                            <button class="btn btn-sm btn-outline-danger" title="Hapus tugas" aria-label="Hapus tugas"><i class="fas fa-ship"></i></button>
                                                         </form>
                                                     </div>
                                                 </li>
@@ -240,7 +246,7 @@ body { background: var(--bg-page); color: var(--text); }
                                     <div class="card-body">
                                         <ul class="list-group list-group-flush">
                                             @foreach($tasks as $task)
-                                                <li class="list-group-item d-flex align-items-center justify-content-between">
+                                                <li class="list-group-item d-flex align-items-center justify-content-between {{ $task->is_done ? 'task-done-item' : '' }}">
                                                     <div class="d-flex align-items-center gap-2">
                                                         <i class="far fa-circle" style="color:var(--muted)"></i>
                                                         <div class="task-name ms-2">{{ $task->name }}</div>
@@ -282,7 +288,7 @@ body { background: var(--bg-page); color: var(--text); }
                                     <div class="card-body">
                                         <ul class="list-group list-group-flush">
                                             @foreach($tasks as $task)
-                                                <li class="list-group-item d-flex align-items-center justify-content-between">
+                                                <li class="list-group-item d-flex align-items-center justify-content-between {{ $task->is_done ? 'task-done-item' : '' }}">
                                                     <div class="d-flex align-items-center gap-2">
                                                         <i class="fas fa-check-circle" style="color:var(--success)"></i>
                                                         <div class="task-name task-done ms-2">{{ $task->name }}</div>
@@ -338,7 +344,7 @@ body { background: var(--bg-page); color: var(--text); }
                             @if($list->tasks->count() > 0)
                                 <ul class="list-group list-group-flush mb-3">
                                     @foreach($list->tasks as $task)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center {{ $task->is_done ? 'task-done-item' : '' }}">
                                             <div class="d-flex align-items-center gap-2">
                                                 @if($task->is_done)
                                                     <i class="fas fa-check-circle" style="color:var(--success)"></i>
