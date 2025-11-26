@@ -118,7 +118,7 @@ body { background: var(--bg-page); color: var(--text); }
                     <i class="fas fa-clipboard-list" style="color:var(--accent-teal)"></i>
                     Tugas Saya
                 </h2>
-                <div class="sub">Kelola daftar — animasi dikurangi, UI kini lebih ramah untuk perangkat sentuh.</div>
+                <div class="sub">Kelola Tugas Kamu, Tetap Teratur Tanpa Ribet!</div>
             </div>
 
             <div class="d-flex align-items-center gap-2">
