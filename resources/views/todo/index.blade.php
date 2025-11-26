@@ -57,7 +57,7 @@ body { background: var(--bg-page); color: var(--text); }
 .filter-pills .nav-link { border-radius:999px; padding:.32rem .65rem; color:var(--muted); background: transparent; border:1px solid rgba(15,23,42,0.04); font-weight:700; }
 .filter-pills .nav-link.active{ background: var(--accent-teal); color: #fff; box-shadow: 0 8px 20px rgba(6,182,212,0.05); border-color: rgba(6,182,212,0.12); }
 
-/* right column */
+ /* right column */
 .sidebar { position:sticky; top:18px; }
 .link-text { color: var(--accent-teal); font-weight:700; text-decoration: none; }
 .link-text-accent { color: var(--accent-orange); font-weight:700; text-decoration:none; }
@@ -208,14 +208,14 @@ body { background: var(--bg-page); color: var(--text); }
                                                     </div>
                                                     <div class="d-flex gap-2">
                                                         @if(!$task->is_done)
-                                                            <form action="{{ route('tasks.done', $task->id) }}" method="POST" style="display:inline">
+                                                            <form action="{{ route('tasks.done', $task->id) }}" method="POST" style="display:inline" class="mark-done-form" data-sound="/sound/selesai.mp3">
                                                                 @csrf @method('PUT')
                                                                 <button class="btn btn-sm btn-outline-success" title="Tandai selesai" aria-label="Tandai selesai"><i class="fas fa-check"></i></button>
                                                             </form>
                                                         @endif
                                                         <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Hapus tugas ini?')">
                                                             @csrf @method('DELETE')
-                                                            <button class="btn btn-sm btn-outline-danger" title="Hapus tugas" aria-label="Hapus tugas"><i class="fas fa-ship"></i></button>
+                                                            <button class="btn btn-sm btn-outline-danger" title="Hapus tugas" aria-label="Hapus tugas"><i class="fas fa-trash"></i></button>
                                                         </form>
                                                     </div>
                                                 </li>
@@ -252,13 +252,13 @@ body { background: var(--bg-page); color: var(--text); }
                                                         <div class="task-name ms-2">{{ $task->name }}</div>
                                                     </div>
                                                     <div class="d-flex gap-2">
-                                                        <form action="{{ route('tasks.done', $task->id) }}" method="POST" style="display:inline">
+                                                        <form action="{{ route('tasks.done', $task->id) }}" method="POST" style="display:inline" class="mark-done-form" data-sound="/sound/selesai.mp3">
                                                             @csrf @method('PUT')
                                                             <button class="btn btn-sm btn-outline-success" title="Tandai selesai"><i class="fas fa-check"></i></button>
                                                         </form>
                                                         <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Hapus tugas ini?')">
                                                             @csrf @method('DELETE')
-                                                            <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-ship"></i></button>
+                                                            <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-trash"></i></button>
                                                         </form>
                                                     </div>
                                                 </li>
@@ -295,7 +295,7 @@ body { background: var(--bg-page); color: var(--text); }
                                                     </div>
                                                     <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Hapus tugas ini?')">
                                                         @csrf @method('DELETE')
-                                                        <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-ship"></i></button>
+                                                        <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-trash"></i></button>
                                                     </form>
                                                 </li>
                                             @endforeach
@@ -335,7 +335,7 @@ body { background: var(--bg-page); color: var(--text); }
                                 <a href="{{ route('lists.edit', $list->id) }}" class="link-text-accent">Edit</a>
                                 <form action="{{ route('lists.destroy', $list->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Yakin menghapus list ini dan semua tugasnya?')">
                                     @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-outline-danger" title="Hapus list"><i class="fas fa-ship"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Hapus list"><i class="fas fa-trash"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -357,7 +357,7 @@ body { background: var(--bg-page); color: var(--text); }
 
                                             <div class="d-flex gap-2">
                                                 @if(!$task->is_done)
-                                                    <form action="{{ route('tasks.done', $task->id) }}" method="POST" style="display:inline">
+                                                    <form action="{{ route('tasks.done', $task->id) }}" method="POST" style="display:inline" class="mark-done-form" data-sound="/sound/selesai.mp3">
                                                         @csrf @method('PUT')
                                                         <button class="btn btn-sm btn-outline-success" title="Tandai selesai"><i class="fas fa-check"></i></button>
                                                     </form>
@@ -365,7 +365,7 @@ body { background: var(--bg-page); color: var(--text); }
                                                 <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Hapus tugas ini?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button class="btn btn-sm btn-outline-danger" title="Hapus tugas"><i class="fas fa-ship"></i></button>
+                                                    <button class="btn btn-sm btn-outline-danger" title="Hapus tugas"><i class="fas fa-trash"></i></button>
                                                 </form>
                                             </div>
                                         </li>
@@ -410,6 +410,8 @@ body { background: var(--bg-page); color: var(--text); }
 <!-- in-page toast and audio -->
 <div id="inpage-toast" role="status" aria-live="polite"></div>
 <audio id="notif-audio" preload="auto"><source src="/sound/notif.mp3" type="audio/mpeg"></audio>
+<!-- audio khusus untuk aksi selesai (sesuai permintaan) -->
+<audio id="done-audio" preload="auto"><source src="/sound/selesai.mp3" type="audio/mpeg"></audio>
 
 <script>
 (function(){
@@ -423,7 +425,29 @@ body { background: var(--bg-page); color: var(--text); }
 
     function showInPage(text){ const t = qs('#inpage-toast'); if(!t) return; t.textContent = text; t.style.display = 'block'; clearTimeout(t._h); t._h = setTimeout(()=>{ t.style.display = 'none'; }, 5000); }
 
-    function playSound(){ const audio = qs('#notif-audio'); if(audio && (audio.currentSrc || audio.src)){ const p = audio.play(); if(p && p.catch) p.catch(()=> fallbackBeep()); } else fallbackBeep(); }
+    // enhanced playSound: optional src. If src omitted, fall back to #notif-audio (original behaviour)
+    function playSound(src){
+        if(src){
+            try{
+                const a = document.createElement('audio');
+                a.src = src;
+                a.preload = 'auto';
+                // try to play; if blocked, fallbackBeep will run through catch
+                const p = a.play();
+                if(p && p.catch) p.catch(()=> fallbackBeep());
+                return;
+            }catch(e){
+                fallbackBeep();
+                return;
+            }
+        }
+        // original notif-audio behaviour
+        const audio = qs('#notif-audio');
+        if(audio && (audio.currentSrc || audio.src)){
+            const p = audio.play();
+            if(p && p.catch) p.catch(()=> fallbackBeep());
+        } else fallbackBeep();
+    }
     function fallbackBeep(){ try{ const ctx = new (window.AudioContext||window.webkitAudioContext)(); const o = ctx.createOscillator(); const g = ctx.createGain(); o.type='sine'; o.frequency.value=880; g.gain.value=0.02; o.connect(g); g.connect(ctx.destination); o.start(); setTimeout(()=>{ o.stop(); ctx.close(); }, 180); }catch(e){} }
 
     // deadline check (kept as original behaviour)
@@ -471,7 +495,43 @@ body { background: var(--bg-page); color: var(--text); }
     document.addEventListener('click', askPermission, { once:true });
     document.addEventListener('keydown', askPermission, { once:true });
 
-    window.addEventListener('load', ()=>{ checkDeadlines(); setInterval(checkDeadlines, 60*1000); });
+    // --- NEW: handle mark-done forms to show notification + play sound before submit ---
+    function initMarkDoneForms(){
+        qsa('.mark-done-form').forEach(form=>{
+            // prevent double-binding
+            if(form._bound) return;
+            form._bound = true;
+
+            form.addEventListener('submit', function(e){
+                // show immediate feedback to user (before navigation)
+                try{
+                    const li = form.closest('li');
+                    const taskName = li ? (li.querySelector('.task-name')?.textContent?.trim() || 'Tugas') : 'Tugas';
+                    const text = `${taskName} ditandai selesai.`;
+                    const shown = showBrowserNotification('Tugas Selesai', text);
+                    if(!shown) showInPage(text);
+                }catch(err){ /* ignore */ }
+
+                // try to play the provided sound (data-sound) or fallback to done-audio
+                const sound = form.getAttribute('data-sound') || '/sound/selesai.mp3';
+                // attempt to play then submit shortly after so user perceives sound
+                e.preventDefault();
+                // attempt to play; we won't await because browser may block; submit after small delay
+                try{
+                    playSound(sound);
+                }catch(e){}
+                // submit after short delay to allow sound to start (150ms). This is small and shouldn't affect UX.
+                setTimeout(()=>{ form.submit(); }, 150);
+            });
+        });
+    }
+
+    // initialize on load and whenever content changes if needed
+    window.addEventListener('load', ()=>{ checkDeadlines(); setInterval(checkDeadlines, 60*1000); initMarkDoneForms(); });
+
+    // in case of PJAX / partial replace, you can call initMarkDoneForms() again.
+    // expose for console debug
+    window.todoInitMarkDoneForms = initMarkDoneForms;
 
 })();
 </script>
