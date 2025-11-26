@@ -3,13 +3,13 @@
 @section('content')
 <style>
     :root{
-        --bg-page: #f8fafc;         /* very light background */
-        --panel: #ffffff;           /* card background */
-        --muted: #6b7280;           /* secondary text */
-        --text: #0f172a;            /* primary text (dark) */
-        --accent-teal: #06b6d4;     /* main accent (teal/cyan) */
+        --bg-page: #ffffff;           /* PUTIH MURNI */
+        --panel: #ffffff;
+        --muted: #6b7280;
+        --text: #0f172a;
+        --accent-teal: #06b6d4;
         --accent-teal-deep: #0e7490;
-        --accent-orange: #fb923c;   /* secondary accent */
+        --accent-orange: #fb923c;
         --success: #10b981;
         --card-radius: 12px;
         --glass: rgba(15,23,42,0.02);
@@ -32,16 +32,22 @@
     .sub { color:var(--muted); margin-top:.25rem; font-size:.95rem; }
 
     .stats { display:flex; gap:.75rem; margin-top:.85rem; flex-wrap:wrap; }
+    /* default stat (netral / putih) */
     .stat {
-        background: linear-gradient(180deg, rgba(6,182,212,0.04), rgba(251,146,60,0.01));
+        background: #ffffff;
         padding:.55rem .9rem;
         border-radius:10px;
         min-width:120px;
         text-align:center;
         border:1px solid rgba(15,23,42,0.03);
+        box-shadow: 0 2px 6px rgba(15,23,42,0.03);
     }
     .stat h4 { margin:0; color:var(--text); }
     .stat p { margin:0; color:var(--muted); font-size:.85rem; }
+
+    /* Solid colored stat variants (no gradient) */
+    .stat-blue { background: var(--accent-teal); color: #ffffff; border-color: rgba(6,182,212,0.12); }
+    .stat-red  { background: var(--accent-orange); color: #ffffff; border-color: rgba(251,146,60,0.12); }
 
     /* Filter pills */
     .filter-pills .nav-link {
@@ -52,10 +58,12 @@
         border:1px solid rgba(15,23,42,0.04);
         font-weight:600;
     }
+    /* aktif -> solid biru */
     .filter-pills .nav-link.active{
-        background: linear-gradient(90deg,var(--accent-teal),var(--accent-orange));
-        color:#071426;
+        background: var(--accent-teal);
+        color: #ffffff;
         box-shadow: 0 6px 18px rgba(6,182,212,0.06);
+        border-color: rgba(6,182,212,0.12);
     }
 
     /* Lists (cards) */
@@ -88,7 +96,7 @@
     .task-name { max-width:70%; display:inline-block; vertical-align:middle; color:var(--text); }
     .task-done { color:var(--muted); text-decoration:line-through; }
 
-    /* Buttons - SIMPLE SOLID COLORS (no gradients) */
+    /* Buttons - keep for form submits only */
     .btn {
         border-radius:10px;
         font-weight:700;
@@ -99,38 +107,13 @@
         border: 1px solid rgba(0,0,0,0.06);
         box-shadow: 0 2px 6px rgba(6,182,212,0.08);
     }
-    .btn-primary:hover {
-        background: var(--accent-teal-deep);
-        color:#fff;
-    }
-    .btn-accent {
-        background: var(--accent-orange);
-        color: #ffffff;
-        border: 1px solid rgba(0,0,0,0.06);
-        box-shadow: 0 2px 6px rgba(251,146,60,0.08);
-    }
-    .btn-accent:hover{
-        background:#ef6c00;
-        color:#fff;
-    }
+    .btn-primary:hover { background: var(--accent-teal-deep); color:#fff; }
 
-    .btn-outline-success {
-        background: transparent;
-        color: var(--success);
-        border: 1px solid rgba(16,185,129,0.18);
-    }
-    .btn-outline-success:hover {
-        background: rgba(16,185,129,0.06);
-    }
-
-    .btn-outline-danger {
-        background: transparent;
-        color: #dc2626;
-        border: 1px solid rgba(220,38,38,0.12);
-    }
-    .btn-outline-danger:hover {
-        background: rgba(220,38,38,0.04);
-    }
+    .btn-accent { background: var(--accent-orange); color: #ffffff; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 2px 6px rgba(251,146,60,0.08); }
+    .btn-outline-success { background: transparent; color: var(--success); border: 1px solid rgba(16,185,129,0.18); }
+    .btn-outline-success:hover { background: rgba(16,185,129,0.06); }
+    .btn-outline-danger { background: transparent; color: #dc2626; border: 1px solid rgba(220,38,38,0.12); }
+    .btn-outline-danger:hover { background: rgba(220,38,38,0.04); }
 
     .badge { border-radius:999px; padding:.28rem .6rem; font-weight:700; font-size:.80rem; }
     .badge-blue { background: var(--accent-teal); color:#fff; }
@@ -142,6 +125,21 @@
 
     .empty-state { text-align:center; padding:1.25rem; color:var(--muted); }
     .empty-state i { font-size:2rem; color: rgba(15,23,42,0.06); display:block; margin-bottom:.5rem; }
+
+    /* --- text-link styles --- */
+    .link-text {
+        color: var(--accent-teal);
+        font-weight:700;
+        text-decoration: none;
+    }
+    .link-text:hover { text-decoration: underline; color: var(--accent-teal-deep); }
+
+    .link-text-accent {
+        color: var(--accent-orange);
+        font-weight:700;
+        text-decoration:none;
+    }
+    .link-text-accent:hover { text-decoration: underline; color:#ef6c00; }
 
     @media (max-width:768px){
         .stats{ flex-direction:column; }
@@ -164,11 +162,12 @@
                     <h4>{{ $lists->count() }}</h4>
                     <p>Total List</p>
                 </div>
-                <div class="stat" style="background:linear-gradient(90deg,var(--accent-teal),var(--accent-teal-deep)); color:#021424;">
+                <!-- gunakan kelas stat-blue / stat-red (solid colors, bukan gradasi) -->
+                <div class="stat stat-blue">
                     <h4>{{ $lists->sum(fn($l) => $l->tasks->where('is_done', true)->count()) }}</h4>
                     <p>Selesai</p>
                 </div>
-                <div class="stat" style="background:linear-gradient(90deg,var(--accent-orange),#ef6c00); color:#071426;">
+                <div class="stat stat-red">
                     <h4>{{ $lists->sum(fn($l) => $l->tasks->where('is_done', false)->count()) }}</h4>
                     <p>Belum</p>
                 </div>
@@ -177,7 +176,8 @@
         </div>
 
         <div class="mt-3 mt-md-0 text-md-end">
-            <a href="{{ route('lists.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Buat List</a>
+            <!-- Ganti tombol "Buat List" menjadi teks link -->
+            
 
             @isset($lists)
             <div class="filter-pills mt-2 d-inline-block">
@@ -191,6 +191,7 @@
         </div>
     </div>
 
+    {{-- sisa layout (tidak diubah) --}}
     @isset($lists)
         @php $allTasks = $lists->flatMap(fn($l) => $l->tasks); @endphp
 
@@ -352,7 +353,9 @@
                                         <div class="small text-muted">{{ $list->tasks->count() }} tugas</div>
                                     </div>
                                     <div class="d-flex gap-2">
-                                        <a href="{{ route('lists.edit', $list->id) }}" class="btn btn-sm btn-accent" title="Edit list"><i class="fas fa-edit"></i></a>
+                                        <!-- edit link as plain text -->
+                                        <a href="{{ route('lists.edit', $list->id) }}" class="link-text-accent">Edit</a>
+
                                         <form action="{{ route('lists.destroy', $list->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Yakin menghapus list ini dan semua tugasnya?')">
                                             @csrf @method('DELETE')
                                             <button class="btn btn-sm btn-outline-danger" title="Hapus list"><i class="fas fa-trash"></i></button>
@@ -408,7 +411,8 @@
 
                         <div class="card card-min">
                             <div class="card-body text-center">
-                                <a href="{{ route('lists.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Buat List Baru</a>
+                                <!-- replace button with plain text link -->
+                                <a href="{{ route('lists.create') }}" class="link-text">Buat List Baru</a>
                             </div>
                         </div>
                     </div>
@@ -419,7 +423,7 @@
                         <i class="fas fa-clipboard-list" style="font-size:2rem;color:var(--muted)"></i>
                         <h4 class="mt-2">Belum ada list</h4>
                         <p>Buat list to-do pertama kamu untuk memulai!</p>
-                        <a href="{{ route('lists.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Buat List Pertama</a>
+                        <a href="{{ route('lists.create') }}" class="link-text">Buat List Pertama</a>
                     </div>
                 </div>
             @endif

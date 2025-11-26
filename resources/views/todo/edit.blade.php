@@ -5,9 +5,9 @@
     <div class="col-md-8">
         <div class="mb-4">
             <h1 class="page-title">
-                <i class="fas fa-edit"></i> Edit To-Do List
+                <i class="fas fa-edit"></i> Edit Daftar Tugas
             </h1>
-            <p class="text-muted">Update your list name</p>
+            <p class="text-muted">Perbarui nama Tugas Anda</p>
         </div>
 
         <div class="card">
@@ -18,7 +18,7 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">
-                            <i class="fas fa-tag"></i> List Name
+                            <i class="fas fa-tag"></i> Nama Tugas
                         </label>
                         <input type="text" 
                                name="name" 
@@ -36,34 +36,34 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-warning">
-                            <i class="fas fa-save"></i> Update List
+                            <i class="fas fa-save"></i> Perbarui Daftar
                         </button>
                         <a href="{{ route('lists.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Back
+                            <i class="fas fa-arrow-left"></i> Kembali
                         </a>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- List Statistics -->
+        <!-- Statistik List -->
         <div class="card mt-4">
             <div class="card-body">
                 <h5 class="card-title">
-                    <i class="fas fa-chart-bar"></i> List Statistics
+                    <i class="fas fa-chart-bar"></i> Statistik Daftar
                 </h5>
                 <div class="row text-center">
                     <div class="col-4">
                         <h3 class="text-primary">{{ $list->tasks->count() }}</h3>
-                        <small class="text-muted">Total Tasks</small>
+                        <small class="text-muted">Total Tugas</small>
                     </div>
                     <div class="col-4">
                         <h3 class="text-success">{{ $list->tasks->where('is_done', true)->count() }}</h3>
-                        <small class="text-muted">Completed</small>
+                        <small class="text-muted">Selesai</small>
                     </div>
                     <div class="col-4">
                         <h3 class="text-warning">{{ $list->tasks->where('is_done', false)->count() }}</h3>
-                        <small class="text-muted">Pending</small>
+                        <small class="text-muted">Belum Selesai</small>
                     </div>
                 </div>
             </div>

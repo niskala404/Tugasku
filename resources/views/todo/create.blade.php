@@ -7,9 +7,9 @@
         <!-- Judul Halaman -->
         <div class="mb-4">
             <h1 class="page-title fw-bold" style="font-size: 28px;">
-                <i class="fas fa-plus-circle text-primary"></i> Buat Daftar To-Do Baru
+                <i class="fas fa-plus-circle text-primary"></i> Buat Daftar Tugas Baru
             </h1>
-            <p class="text-muted">Atur aktivitas kamu dengan membuat daftar baru 🎯</p>
+            <p class="text-muted">Atur aktivitas kamu dengan membuat daftar baru</p>
         </div>
 
         <!-- Card Form -->

@@ -1,41 +1,57 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
+// ====================================
+// Halaman welcome / guest
+// ====================================
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard (akses hanya jika login)
-Route::get('/dashboard', [TodoController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// ====================================
+// Guest routes (belum login)
+// ====================================
 
-// Semua route yang butuh login
-Route::middleware('auth')->group(function () {
+// Step 1: Registrasi
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
+
+// Step 2: Step-by-step profile creation
+Route::get('/profile/create', [RegisteredUserController::class, 'showProfileForm'])->name('profile.create');
+Route::post('/profile', [RegisteredUserController::class, 'storeProfile'])->name('profile.store');
+
+// ====================================
+// Authenticated & verified routes
+// ====================================
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [TodoController::class, 'index'])->name('dashboard');
 
     // CRUD Todo List
     Route::resource('lists', TodoController::class);
 
-    // Task Routes
-    Route::post('/tasks/{listId}', [TaskController::class, 'store'])->name('tasks.store');
-    Route::put('/tasks/{id}', [TaskController::class, 'update'])->name('tasks.update');
-    Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    // Task routes
+    Route::prefix('tasks')->group(function () {
+        Route::post('{listId}', [TaskController::class, 'store'])->name('tasks.store');
+        Route::put('{id}', [TaskController::class, 'update'])->name('tasks.update');
+        Route::delete('{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+        Route::put('{id}/done', [TaskController::class, 'done'])->name('tasks.done');
+        Route::get('/all', [TaskController::class, 'all'])->name('tasks.all');
+    });
 
-    // Tandai task selesai
-    Route::put('/tasks/{id}/done', [TaskController::class, 'done'])->name('tasks.done');
-
-    // Melihat semua tasks
-    Route::get('/all-tasks', [TaskController::class, 'all'])->name('tasks.all');
-
-    // Profile routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Profile management (edit/update/delete after account is active)
+    Route::prefix('profile')->group(function () {
+        Route::get('', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 });
 
-// Auth route (register + login)
+// Auth routes (login, logout, forgot password, etc.)
 require __DIR__.'/auth.php';

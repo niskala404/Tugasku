@@ -2,22 +2,17 @@
 
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-20"> <!-- naikin tinggi navbar -->
+        <div class="flex justify-between h-20">
             <div class="flex">
 
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    
-                 <img 
-    src="{{ asset('AGENDA KERJA.png') }}" 
-    alt="Agenda Kerja Logo" 
-    class="block"
-    style="height: 110px; width: auto;"
->
-
-
-
-                    
+                    <img 
+                        src="{{ asset('AGENDA KERJA.png') }}" 
+                        alt="Agenda Kerja Logo" 
+                        class="block"
+                        style="height: 110px; width: auto;"
+                    >
                 </div>
 
                 <!-- Navigation Links -->
@@ -32,7 +27,8 @@
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
+            <!-- Settings Dropdown (hanya muncul kalau login) -->
+            @auth
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -69,6 +65,7 @@
                     </x-slot>
                 </x-dropdown>
             </div>
+            @endauth
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -88,6 +85,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
+    @auth
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white border-t border-gray-300">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link 
@@ -95,7 +93,7 @@
                 :active="request()->routeIs('dashboard')"
                 class="!text-black hover:!text-gray-700"
             >
-                AGENDA KERJA
+                BERANDA
             </x-responsive-nav-link>
         </div>
 
@@ -124,4 +122,5 @@
             </div>
         </div>
     </div>
+    @endauth
 </nav>
